@@ -212,7 +212,7 @@ __marimo__/
 logs/
 
 # Data directory - exclude everything except README
-data/
+# data/
 
 
 .idea/
