@@ -1,23 +1,20 @@
 # Copyright (c) 2025 MiroMind
 # This source code is licensed under the MIT License.
-import os
-import json
-from pathlib import Path
-from dotenv import load_dotenv
-from datetime import datetime
+import argparse
 import asyncio
+import json
+import os
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
 
-import hydra
+from dotenv import load_dotenv
+from hydra import compose, initialize_config_dir
 from omegaconf import DictConfig, OmegaConf
 
-# Import from the new modular structure
-from src.core.pipeline import (
-    create_pipeline_components,
-    execute_task_pipeline,
-)
+from src.core.pipeline import create_pipeline_components, execute_task_pipeline
 from src.logging.task_logger import bootstrap_logger
 
-# Configure logger and get the configured instance
 logger = bootstrap_logger()
 
 
@@ -56,31 +53,29 @@ def load_query_from_json(
     raise ValueError(f"Query ID '{query_id}' not found in {json_path}")
 
 
-async def amain(cfg: DictConfig) -> None:
+async def amain(cfg: DictConfig, query_id: Optional[str]) -> None:
     """Asynchronous main function."""
 
     logger.info(OmegaConf.to_yaml(cfg))
 
-    query_id = str(os.environ.get("QUERY_ID"))
     llm_name = cfg.llm.model_name
 
     if query_id and llm_name:
         # Load query from JSON file
         try:
             query_data = load_query_from_json(query_id)
-            task_description = query_data.get("query", "")
-            task_id = f"{llm_name}/{query_id}"
-
-            logger.info(f"Running task for query ID: {query_id}")
-            logger.info(f"Task description: {task_description[:200]}...")
-
         except (FileNotFoundError, ValueError) as e:
             logger.error(f"Error loading query: {e}")
             return
+
+        task_description = query_data.get("query", "")
+        task_id = f"{llm_name}/{query_id}"
     else:
         # Fallback to default task (for backward compatibility)
         task_id = f"task_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         task_description = ""
+
+    logger.info(f"Task description: {task_description[:200]}...")
 
     task_file_name = ""
 
@@ -102,9 +97,14 @@ async def amain(cfg: DictConfig) -> None:
     )
 
 
-@hydra.main(config_path="conf", config_name="config", version_base=None)
-def main(cfg: DictConfig) -> None:
-    asyncio.run(amain(cfg))
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--query_id", type=str, default=None)
+    args, hydra_args = parser.parse_known_args()
+
+    with initialize_config_dir(config_dir=os.path.abspath("conf"), version_base=None):
+        cfg = compose(config_name="config", overrides=hydra_args)
+        asyncio.run(amain(cfg, args.query_id))
 
 
 if __name__ == "__main__":

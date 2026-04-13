@@ -968,7 +968,7 @@ The output JSON **must** include the `research_notes` field:
 
 **🚨 关键要求：**
 - **位置**：参考文献必须放在该 section 的最后，使用 `## 参考文献` 标题
-- **锚点ID**：每个参考文献必须包含 `<a id="refN"></a>` 锚点，且与正文中的引用编号一致
+- **锚点ID**：每个参考文献必须包含 `<a id="refN"></a> [N]` 锚点，且与正文中的引用编号一致
 - **完整信息**：包含完整的引用信息（作者/机构、年份、标题、URL）
 
 ---
@@ -1187,7 +1187,7 @@ According to recent research <a href="#ref1">[1]</a>, the global AI market size 
 
 **🚨 Key Requirements:**
 - **Position**: References must be placed at the end of the section, using `## References` title
-- **Anchor ID**: Each reference must include `<a id="refN"></a>` anchor, consistent with citation numbering in the body text
+- **Anchor ID**: Each reference must include `<a id="refN"></a> [N]` anchor, consistent with citation numbering in the body text
 - **Complete Information**: Include complete citation information (author/institution, year, title, URL)
 
 ---

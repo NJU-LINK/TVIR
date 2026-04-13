@@ -97,7 +97,7 @@ OUT OF SCOPE:
 3) Missing or insufficient evidence. Only focus on **contradictions** between the chart and the provided sources.
 
 DEFINITION OF AN ISSUE:
-An issue exists when at least one claim from the chart is **contradicted** by References under the same (or materially equivalent) claim context → type **CONTRADICTION**.
+An issue exists when at least one claim from the chart is **contradicted** by References under the same (or materially equivalent) claim context.
 
 COUNTING RULES:
 - Each distinct underlying problem counts as ONE issue.

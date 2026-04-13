@@ -1720,7 +1720,7 @@ class Orchestrator:
             self.task_log.log_step(
                 "info",
                 "Report Workflow | Plan | Summary",
-                f"Plan phase completed in {plan_phase_elapsed:.2f} seconds"
+                f"Plan phase completed in {plan_phase_elapsed:.2f} seconds",
             )
 
             return outline
@@ -2700,10 +2700,30 @@ Based on the above information, please:
         self.task_log.log_step(
             "info",
             "Report Workflow | Polish | Summary",
-            f"Polish phase completed in {polish_phase_elapsed:.2f}s"
+            f"Polish phase completed in {polish_phase_elapsed:.2f}s",
         )
 
         return final_markdown
+
+    def _normalize_ref_content(self, content: str) -> str:
+        """Normalize reference content for deduplication comparison.
+
+        Examples:
+            "36氪 (2026). AI存储量价齐飞，国产芯片迎来历史性机遇."
+                -> "ai存储量价齐飞，国产芯片迎来历史性机遇."
+        """
+
+        # Step 1: Remove author and date prefix
+        prefix_pattern = r"^[^(]+\s*\([^)]+\)\.?\s*"
+        normalized = re.sub(prefix_pattern, "", content)
+
+        # Step 2: Convert to lowercase
+        normalized = normalized.lower()
+
+        # Step 3: Remove all whitespace
+        normalized = re.sub(r"[\s\u3000]+", "", normalized)
+
+        return normalized
 
     def _deduplicate_and_renumber_references(
         self, sections: List[Dict]
@@ -2717,6 +2737,7 @@ Based on the above information, please:
             Tuple of (deduplicated_references, updated_sections)
         """
         seen_urls = {}
+        seen_contents = {}  # Track normalized content for deduplication
         deduplicated = []
         updated_sections = []
 
@@ -2724,36 +2745,46 @@ Based on the above information, please:
             content = section.get("content", "")
             references = section.get("references", [])
 
-            # Build ref mapping (old number -> new number)
+            # Build ref mapping (old id -> new id)
             ref_mapping = {}
 
             for ref in references:
                 url = ref.get("url", "")
-                old_number = ref.get("number", "")
+                old_id = ref.get("id", "")
                 ref_content = ref.get("content", "")
 
-                if url not in seen_urls:
+                # Normalize content for comparison
+                normalized_content = self._normalize_ref_content(ref_content)
+
+                # Check for duplicates by URL or normalized content
+                if url and url in seen_urls:
+                    # Duplicate by URL
+                    ref_mapping[old_id] = seen_urls[url]
+                elif normalized_content and normalized_content in seen_contents:
+                    # Duplicate by content
+                    ref_mapping[old_id] = seen_contents[normalized_content]
+                else:
                     # New unique reference
-                    new_number = str(len(deduplicated) + 1)
+                    new_id = str(len(deduplicated) + 1)
                     deduplicated.append(
                         {
-                            "id": new_number,
-                            "number": new_number,
+                            "id": new_id,
+                            "number": new_id,
                             "content": ref_content,
                             "url": url,
                         }
                     )
-                    seen_urls[url] = new_number
-                    ref_mapping[old_number] = new_number
-                else:
-                    # Duplicate reference, map to existing
-                    ref_mapping[old_number] = seen_urls[url]
+                    if url:
+                        seen_urls[url] = new_id
+                    if normalized_content:
+                        seen_contents[normalized_content] = new_id
+                    ref_mapping[old_id] = new_id
 
             # Update citations in this section's content
             def replace_citation(match):
-                old_num = match.group(1)
-                new_num = ref_mapping.get(old_num, old_num)
-                return f'<a href="#ref{new_num}">[{new_num}]</a>'
+                old_id = match.group(1)
+                new_id = ref_mapping.get(old_id, old_id)
+                return f'<a href="#ref{new_id}">[{new_id}]</a>'
 
             content = re.sub(
                 r'<a\s+href="#ref(\d+)">\[(\d+)\]</a>',
@@ -2781,8 +2812,8 @@ Based on the above information, please:
         """Remove duplicate citations within consecutive citation groups.
 
         Identifies all consecutive citation groups (citations separated only by spaces or adjacent),
-        removes duplicate citation numbers within each group, keeps only the first occurrence of
-        each number, and normalizes spacing to a single space between all retained citations.
+        removes duplicate citation ids within each group, keeps only the first occurrence of
+        each id, and normalizes spacing to a single space between all retained citations.
 
         Examples:
             Input: [1][2][1] -> Output: [1] [2]
@@ -2808,20 +2839,20 @@ Based on the above information, please:
             """Process a single citation group: deduplicate and join with spaces."""
             group_text = match.group(0)
 
-            # Regex pattern to extract citation numbers
+            # Regex pattern to extract citation ids
             citation_pattern = r'<a\s+href="#ref(\d+)">\[(\d+)\]</a>'
 
-            seen_refs = set()  # Track citation numbers already seen
+            seen_refs = set()  # Track citation ids already seen
             result = []  # List of citations to keep
 
             # Iterate through all citations in the group
             for cite_match in re.finditer(citation_pattern, group_text):
-                ref_num = cite_match.group(1)  # Citation number
+                ref_id = cite_match.group(1)  # Citation id
                 full_citation = cite_match.group(0)  # Full citation HTML
 
-                if ref_num not in seen_refs:
+                if ref_id not in seen_refs:
                     # First occurrence, keep it
-                    seen_refs.add(ref_num)
+                    seen_refs.add(ref_id)
                     result.append(full_citation)
                 # Duplicate occurrence, skip it
 
@@ -2851,18 +2882,18 @@ Based on the above information, please:
                 updated_sections.append(section)
                 continue
 
-            # Find ref numbers actually cited in content
-            cited_numbers = set()
+            # Find ref ids actually cited in content
+            cited_ids = set()
             citation_pattern = r'<a\s+href="#ref(\d+)">\[(\d+)\]</a>'
             for match in re.finditer(citation_pattern, content):
-                cited_numbers.add(match.group(1))
+                cited_ids.add(match.group(1))
 
             # Filter out unreferenced refs
             filtered_refs = []
             for ref in references:
-                ref_number = ref.get("number", "")
+                ref_id = ref.get("id", "")
 
-                if ref_number in cited_numbers:
+                if ref_id in cited_ids:
                     filtered_refs.append(ref)
                 else:
                     total_removed += 1
