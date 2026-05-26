@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TVIR: Text-Visual Interleaved Report Generation</title>
+    <meta
+      name="description"
+      content="TVIR: Building Deep Research Agents Towards Text-Visual Interleaved Report Generation - ACL 2026"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="#" class="nav-logo">
+          <img src="static/images/logo.png" alt="TVIR Logo" class="logo-img" />
+          <span>TVIR</span>
+        </a>
+        <ul class="nav-menu">
+          <li><a href="#abstract">Abstract</a></li>
+          <li><a href="#motivation">Motivation</a></li>
+          <li><a href="#benchmark">Benchmark</a></li>
+          <li><a href="#agent">Agent</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#citation">Citation</a></li>
+        </ul>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-bg"></div>
+      <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+          <h1 class="hero-title">
+            <span class="title-highlight">TVIR</span>: Building Deep Research
+            Agents Towards<br />
+            <span class="title-gradient"
+              >Text-Visual Interleaved Report Generation</span
+            >
+          </h1>
+
+          <div class="hero-buttons">
+            <a href="#" class="btn btn-primary">
+              <i class="fas fa-file-pdf"></i>
+              Paper
+            </a>
+            <a href="#" class="btn btn-secondary">
+              <i class="fab fa-github"></i>
+              Code
+            </a>
+            <a href="#" class="btn btn-secondary">
+              <i class="fas fa-database"></i>
+              Benchmark
+            </a>
+            <a href="#" class="btn btn-secondary">
+              <i class="fas fa-rocket"></i>
+              Demo
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">100</span>
+              <span class="stat-label">Expert-Curated Tasks</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">10</span>
+              <span class="stat-label">Domains</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">9</span>
+              <span class="stat-label">Systems Evaluated</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">2</span>
+              <span class="stat-label">Languages</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </header>
+
+    <!-- Abstract Section -->
+    <section id="abstract" class="section">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+          <i class="fas fa-file-alt"></i>
+          Abstract
+        </h2>
+        <div class="abstract-content" data-aos="fade-up" data-aos-delay="100">
+          <p>
+            Deep Research Agents have shown strong capability in multi-step
+            information retrieval, reasoning, and long-form report generation,
+            but existing benchmarks and systems remain predominantly
+            <strong>text-centric</strong>, with limited evaluation of whether
+            visual elements are factually reliable and well aligned with the
+            surrounding analysis.
+          </p>
+          <p>
+            To address this gap, we introduce
+            <strong>TVIR</strong> (<strong>T</strong>ext-<strong>V</strong>isual
+            <strong>I</strong>nterleaved <strong>R</strong>eport Generation),
+            which includes:
+          </p>
+          <div class="highlight-cards">
+            <div class="highlight-card" data-aos="fade-up" data-aos-delay="150">
+              <div class="card-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <h3>TVIR-Bench</h3>
+              <p>
+                A benchmark of 100 expert-curated multimodal deep research tasks
+                that require visual elements to serve specific analytical
+                sub-goals.
+              </p>
+            </div>
+            <div class="highlight-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="card-icon">
+                <i class="fas fa-robot"></i>
+              </div>
+              <h3>TVIR-Agent</h3>
+              <p>
+                A hierarchical multi-agent framework for constructing outlines,
+                retrieving images, generating charts with traceable sources, and
+                composing reports.
+              </p>
+            </div>
+            <div class="highlight-card" data-aos="fade-up" data-aos-delay="250">
+              <div class="card-icon">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+              <h3>Dual-Path Evaluation</h3>
+              <p>
+                A comprehensive framework combining Textual Assessment and
+                Visual Assessment for evidence-driven report evaluation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Motivation Section -->
+    <section id="motivation" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+          <i class="fas fa-lightbulb"></i>
+          Motivation
+        </h2>
+        <div class="motivation-content">
+          <div class="motivation-text" data-aos="fade-right">
+            <h3>The Gap in Current Deep Research Systems</h3>
+            <p>
+              Existing deep research paradigms remain predominantly
+              <strong>text-centric</strong>. Most benchmarks and agent
+              frameworks evaluate success based on textual coherence, depth, and
+              citation support, while overlooking a critical characteristic of
+              real-world professional reports:
+              <strong>the integration of visual evidence</strong>.
+            </p>
+            <div class="problem-list">
+              <div class="problem-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Visual elements treated as decorative supplements</span>
+              </div>
+              <div class="problem-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span
+                  >Limited evaluation of visual fidelity and provenance</span
+                >
+              </div>
+              <div class="problem-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Mismatch between benchmarks and real-world demands</span>
+              </div>
+            </div>
+          </div>
+          <div class="motivation-image" data-aos="fade-left">
+            <img
+              src="static/images/fig1_benchmark_comparison.png"
+              alt="Comparison of deep research benchmarks"
+              class="figure-img"
+            />
+            <p class="figure-caption">
+              <strong>Figure 1:</strong> Comparison of representative deep
+              research benchmarks. Existing benchmarks mainly focus on text-only
+              or weakly multimodal reports, whereas TVIR-Bench requires
+              text-visual interleaved reports with semantically grounded charts
+              and retrieved images.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benchmark Section -->
+    <section id="benchmark" class="section">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+          <i class="fas fa-database"></i>
+          TVIR-Bench
+        </h2>
+
+        <div class="benchmark-overview" data-aos="fade-up" data-aos-delay="100">
+          <p class="section-subtitle">
+            A comprehensive multimodal deep research benchmark with 100
+            expert-curated tasks spanning diverse domains and complexity levels.
+          </p>
+        </div>
+
+        <!-- Domain Distribution -->
+        <div class="benchmark-domains" data-aos="fade-up" data-aos-delay="150">
+          <h3 class="subsection-title">Domain Coverage</h3>
+          <div class="domain-image">
+            <img
+              src="static/images/fig2_domain_taxonomy.png"
+              alt="Domain taxonomy of TVIR-Bench"
+              class="figure-img"
+            />
+            <p class="figure-caption">
+              <strong>Figure 2:</strong> Domain taxonomy of TVIR-Bench.
+            </p>
+          </div>
+        </div>
+
+        <!-- Task Design Principles -->
+        <div class="design-principles" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="subsection-title">Task Design Principles</h3>
+          <div class="principles-grid">
+            <div class="principle-card">
+              <div class="principle-icon"><i class="fas fa-user-tie"></i></div>
+              <h4>Role-Driven</h4>
+              <p>Tasks grounded in realistic user needs</p>
+            </div>
+            <div class="principle-card">
+              <div class="principle-icon"><i class="fas fa-bullseye"></i></div>
+              <h4>Demand-Oriented</h4>
+              <p>Focused on practical requirements</p>
+            </div>
+            <div class="principle-card">
+              <div class="principle-icon"><i class="fas fa-search"></i></div>
+              <h4>Deep Research</h4>
+              <p>Requires substantive analytical synthesis</p>
+            </div>
+            <div class="principle-card">
+              <div class="principle-icon"><i class="fas fa-rocket"></i></div>
+              <h4>Frontier-Focused</h4>
+              <p>Novel and timely topics</p>
+            </div>
+            <div class="principle-card">
+              <div class="principle-icon"><i class="fas fa-images"></i></div>
+              <h4>Multimodal Integration</h4>
+              <p>Explicit multimodal elements required</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline -->
+        <div class="benchmark-pipeline" data-aos="fade-up" data-aos-delay="250">
+          <h3 class="subsection-title">
+            Data Construction & Evaluation Pipeline
+          </h3>
+          <div class="pipeline-image">
+            <img
+              src="static/images/fig3_bench_overview.png"
+              alt="Overview of TVIR-Bench pipeline"
+              class="figure-img"
+            />
+            <p class="figure-caption">
+              <strong>Figure 3:</strong> Overview of TVIR-Bench, including data
+              construction pipeline and evaluation framework.
+            </p>
+          </div>
+        </div>
+
+        <!-- Dataset Statistics -->
+        <div class="dataset-stats" data-aos="fade-up" data-aos-delay="300">
+          <h3 class="subsection-title">Dataset Statistics</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+              <div class="stat-value">100</div>
+              <div class="stat-desc">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-language"></i></div>
+              <div class="stat-value">50 / 50</div>
+              <div class="stat-desc">Chinese / English</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+              <div class="stat-value">10</div>
+              <div class="stat-desc">Major Domains</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon"><i class="fas fa-signal"></i></div>
+              <div class="stat-value">3</div>
+              <div class="stat-desc">Complexity Levels</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation Framework -->
+        <div
+          class="evaluation-framework"
+          data-aos="fade-up"
+          data-aos-delay="350"
+        >
+          <h3 class="subsection-title">Dual-Path Evaluation Framework</h3>
+          <div class="eval-grid">
+            <div class="eval-card eval-textual">
+              <h4><i class="fas fa-align-left"></i> Textual Assessment (TA)</h4>
+              <ul class="metric-list">
+                <li><strong>CS</strong> - Citation Support</li>
+                <li><strong>IA</strong> - Instruction Alignment</li>
+                <li><strong>WQ</strong> - Writing Quality</li>
+                <li><strong>ADB</strong> - Analytical Depth & Breadth</li>
+                <li><strong>FLC</strong> - Factual & Logical Consistency</li>
+              </ul>
+            </div>
+            <div class="eval-card eval-visual">
+              <h4><i class="fas fa-image"></i> Visual Assessment (VA)</h4>
+              <ul class="metric-list">
+                <li><strong>MC</strong> - Multimodal Composition</li>
+                <li><strong>FQ</strong> - Figure Quality</li>
+                <li><strong>FCQ</strong> - Figure Caption Quality</li>
+                <li><strong>FCI</strong> - Figure-Context Integration</li>
+                <li><strong>CSC</strong> - Chart-Source Consistency</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agent Section -->
+    <section id="agent" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+          <i class="fas fa-robot"></i>
+          TVIR-Agent
+        </h2>
+
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+          A hierarchical multi-agent framework for text-visual interleaved
+          report generation.
+        </p>
+
+        <!-- Agent Architecture -->
+        <div class="agent-architecture" data-aos="fade-up" data-aos-delay="150">
+          <img
+            src="static/images/fig4_agent_framework.png"
+            alt="TVIR-Agent Architecture"
+            class="figure-img"
+          />
+          <p class="figure-caption">
+            <strong>Figure 4:</strong> Overview of the proposed multi-stage
+            framework for report generation.
+          </p>
+        </div>
+
+        <!-- Agent Components -->
+        <div class="agent-components">
+          <div class="component-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="component-number">1</div>
+            <div class="component-content">
+              <h3><i class="fas fa-sitemap"></i> Research-Grounded Planning</h3>
+              <p>
+                The <strong>Planner</strong> parses user tasks and iteratively
+                invokes external tools (Google Search, web scraping) to retrieve
+                relevant information. It synthesizes collected information into
+                a structured outline with section titles, summaries, planned
+                visual requirements, and research notes.
+              </p>
+            </div>
+          </div>
+
+          <div class="component-card" data-aos="fade-up" data-aos-delay="250">
+            <div class="component-number">2</div>
+            <div class="component-content">
+              <h3><i class="fas fa-images"></i> Visual Asset Instantiation</h3>
+              <p>Two specialized agents handle different visual needs:</p>
+              <ul>
+                <li>
+                  <strong>Image Searcher:</strong> Retrieves candidate images
+                  through Google Image Search, filters low-quality results, and
+                  uses VQA for relevance verification.
+                </li>
+                <li>
+                  <strong>Chart Generator:</strong> Retrieves relevant data,
+                  verifies authenticity, generates Python plotting code, and
+                  executes it in a sandbox.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="component-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="component-number">3</div>
+            <div class="component-content">
+              <h3>
+                <i class="fas fa-pen-fancy"></i> Context-Aware Sequential
+                Writing
+              </h3>
+              <p>
+                The <strong>Writer</strong> generates the report section by
+                section, conditioning on the current outline unit and a
+                dynamically updated global context. It determines insertion
+                points for visual assets and composes Markdown content with
+                interleaved text and visual elements.
+              </p>
+            </div>
+          </div>
+
+          <div class="component-card" data-aos="fade-up" data-aos-delay="350">
+            <div class="component-number">4</div>
+            <div class="component-content">
+              <h3><i class="fas fa-magic"></i> Global Index Polishing</h3>
+              <p>
+                The <strong>Polisher</strong> processes references and figures
+                at the report level: removes uncited references, deduplicates
+                globally by URL, renumbers into a unified reference list, and
+                reassigns figure IDs in sequential order.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="section">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+          <i class="fas fa-chart-line"></i>
+          Experimental Results
+        </h2>
+
+        <!-- Main Results Table -->
+        <div
+          class="results-table-container"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
+          <h3 class="subsection-title">Main Results</h3>
+          <div class="table-wrapper">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th rowspan="2">Model</th>
+                  <th colspan="3">Aggregate</th>
+                  <th colspan="5">Textual Assessment</th>
+                  <th colspan="5">Visual Assessment</th>
+                </tr>
+                <tr>
+                  <th>Overall</th>
+                  <th>TA</th>
+                  <th>VA</th>
+                  <th>CS</th>
+                  <th>IA</th>
+                  <th>WQ</th>
+                  <th>ADB</th>
+                  <th>FLC</th>
+                  <th>FQ</th>
+                  <th>MC</th>
+                  <th>FCQ</th>
+                  <th>FCI</th>
+                  <th>CSC</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- TVIR-Agent Variants (Ours) - Highest scores first -->
+                <tr class="highlight-row">
+                  <td><strong>TVIR-Agent (Claude-4.5-Sonnet)</strong></td>
+                  <td class="best">74.44</td>
+                  <td>70.12</td>
+                  <td class="best">78.76</td>
+                  <td>51.20</td>
+                  <td>81.09</td>
+                  <td>69.88</td>
+                  <td class="best">72.22</td>
+                  <td>76.20</td>
+                  <td>87.17</td>
+                  <td class="best">77.80</td>
+                  <td class="best">74.49</td>
+                  <td class="best">76.75</td>
+                  <td>77.58</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>TVIR-Agent (Qwen3-Max)</strong></td>
+                  <td>73.53</td>
+                  <td>70.03</td>
+                  <td>77.03</td>
+                  <td>53.68</td>
+                  <td>76.69</td>
+                  <td>69.30</td>
+                  <td>67.48</td>
+                  <td>83.00</td>
+                  <td>91.71</td>
+                  <td>67.80</td>
+                  <td>72.44</td>
+                  <td>74.56</td>
+                  <td class="best">78.63</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>TVIR-Agent (GLM-4.7)</strong></td>
+                  <td>72.62</td>
+                  <td class="best">71.64</td>
+                  <td>73.61</td>
+                  <td class="best">68.64</td>
+                  <td>71.98</td>
+                  <td>69.20</td>
+                  <td>68.16</td>
+                  <td>80.20</td>
+                  <td>84.61</td>
+                  <td>62.55</td>
+                  <td>70.13</td>
+                  <td>73.39</td>
+                  <td>77.35</td>
+                </tr>
+                <!-- Commercial Closed-Source Systems -->
+                <tr>
+                  <td>Manus-1.6</td>
+                  <td>69.73</td>
+                  <td>69.42</td>
+                  <td>70.04</td>
+                  <td>45.57</td>
+                  <td>74.12</td>
+                  <td class="best">72.15</td>
+                  <td>62.84</td>
+                  <td class="best">92.40</td>
+                  <td>86.27</td>
+                  <td>70.75</td>
+                  <td>66.14</td>
+                  <td>71.03</td>
+                  <td>56.02</td>
+                </tr>
+                <tr>
+                  <td>Claude-4.5-Sonnet w/Search</td>
+                  <td>68.72</td>
+                  <td>70.15</td>
+                  <td>67.30</td>
+                  <td>47.53</td>
+                  <td>79.32</td>
+                  <td>69.37</td>
+                  <td>70.52</td>
+                  <td>84.00</td>
+                  <td>90.24</td>
+                  <td>63.85</td>
+                  <td>61.47</td>
+                  <td>53.43</td>
+                  <td>67.49</td>
+                </tr>
+                <tr>
+                  <td>Genspark Deep Research</td>
+                  <td>66.99</td>
+                  <td>68.70</td>
+                  <td>65.29</td>
+                  <td>35.27</td>
+                  <td class="best">83.71</td>
+                  <td>69.28</td>
+                  <td>70.64</td>
+                  <td>84.60</td>
+                  <td class="best">92.87</td>
+                  <td>70.70</td>
+                  <td>63.58</td>
+                  <td>59.00</td>
+                  <td>40.28</td>
+                </tr>
+                <tr>
+                  <td>Perplexity Deep Research</td>
+                  <td>61.20</td>
+                  <td>68.95</td>
+                  <td>53.46</td>
+                  <td>44.60</td>
+                  <td>81.03</td>
+                  <td>67.60</td>
+                  <td>70.64</td>
+                  <td>80.90</td>
+                  <td>73.62</td>
+                  <td>62.90</td>
+                  <td>59.02</td>
+                  <td>63.41</td>
+                  <td>8.35</td>
+                </tr>
+                <tr>
+                  <td>Grok-4.1-Thinking DeepSearch</td>
+                  <td>52.49</td>
+                  <td>58.56</td>
+                  <td>46.43</td>
+                  <td>17.72</td>
+                  <td>60.65</td>
+                  <td>67.68</td>
+                  <td>57.58</td>
+                  <td>89.20</td>
+                  <td>80.43</td>
+                  <td>52.15</td>
+                  <td>47.04</td>
+                  <td>46.76</td>
+                  <td>5.75</td>
+                </tr>
+                <tr class="text-only">
+                  <td>Gemini-3-Pro Deep Research</td>
+                  <td>-</td>
+                  <td>58.52</td>
+                  <td>-</td>
+                  <td>14.96</td>
+                  <td>58.31</td>
+                  <td>66.88</td>
+                  <td>63.94</td>
+                  <td>88.50</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">
+            <i class="fas fa-info-circle"></i>
+            Best scores are highlighted. Gemini-3-Pro generates text-only
+            reports and cannot be evaluated on VA metrics.
+          </p>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="key-insights" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="subsection-title">Key Insights</h3>
+          <div class="insights-grid">
+            <div class="insight-card">
+              <div class="insight-icon"><i class="fas fa-trophy"></i></div>
+              <h4>Strong Overall Performance</h4>
+              <p>
+                TVIR-Agent variants achieve the strongest aggregate performance
+                among all evaluated systems, with TVIR-Agent (Claude-4.5-Sonnet)
+                obtaining the best Overall score.
+              </p>
+            </div>
+            <div class="insight-card">
+              <div class="insight-icon"><i class="fas fa-link"></i></div>
+              <h4>Better Evidence Grounding</h4>
+              <p>
+                TVIR-Agent (GLM-4.7) achieves 68.64 on Citation Support,
+                outperforming the best commercial system by
+                <strong>21.11 points</strong>.
+              </p>
+            </div>
+            <div class="insight-card">
+              <div class="insight-icon"><i class="fas fa-chart-pie"></i></div>
+              <h4>Superior Visual Alignment</h4>
+              <p>
+                TVIR-Agent (Claude-4.5-Sonnet) scores 74.49 on Figure Caption
+                Quality, exceeding Manus-1.6 by
+                <strong>8.35 points</strong>.
+              </p>
+            </div>
+            <div class="insight-card">
+              <div class="insight-icon">
+                <i class="fas fa-balance-scale"></i>
+              </div>
+              <h4>Text vs. Visual Gap</h4>
+              <p>
+                Current systems remain much stronger at textual synthesis than
+                at integrating visual assets, highlighting a significant gap in
+                existing paradigms.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool Usage Analysis -->
+        <div class="tool-analysis" data-aos="fade-up" data-aos-delay="250">
+          <h3 class="subsection-title">Tool Usage Analysis</h3>
+          <div class="analysis-image">
+            <img
+              src="static/images/fig5_tool_usage.png"
+              alt="Tool usage distribution"
+              class="figure-img"
+            />
+            <p class="figure-caption">
+              <strong>Figure 5:</strong> Tool usage distribution of TVIR-Agent
+              variants across major components.
+            </p>
+          </div>
+        </div>
+
+        <!-- Error Analysis -->
+        <div class="error-analysis" data-aos="fade-up" data-aos-delay="300">
+          <h3 class="subsection-title">Structural Error Analysis</h3>
+          <div class="analysis-image">
+            <img
+              src="static/images/fig7_structural_errors.png"
+              alt="Structural error distribution"
+              class="figure-img"
+            />
+            <p class="figure-caption">
+              <strong>Figure 6:</strong> Distribution of structural errors
+              across deep research systems. TVIR-Agent variants produce
+              substantially fewer structural errors than commercial systems.
+            </p>
+          </div>
+        </div>
+
+        <!-- Ablation Study -->
+        <div class="ablation-study" data-aos="fade-up" data-aos-delay="350">
+          <h3 class="subsection-title">Ablation Studies</h3>
+          <div class="ablation-table-wrapper">
+            <table class="ablation-table">
+              <thead>
+                <tr>
+                  <th>System Variant</th>
+                  <th>TA</th>
+                  <th>VA</th>
+                  <th>Overall</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="baseline">
+                  <td>TVIR-Agent (Full)</td>
+                  <td>69.23</td>
+                  <td>78.62</td>
+                  <td>73.92</td>
+                </tr>
+                <tr>
+                  <td>w/o research notes</td>
+                  <td>68.63 <span class="delta">(-0.60)</span></td>
+                  <td>78.42 <span class="delta">(-0.20)</span></td>
+                  <td>73.52 <span class="delta">(-0.40)</span></td>
+                </tr>
+                <tr>
+                  <td>w/o Image Searcher</td>
+                  <td>67.82 <span class="delta">(-1.41)</span></td>
+                  <td>77.23 <span class="delta">(-1.39)</span></td>
+                  <td>72.53 <span class="delta">(-1.39)</span></td>
+                </tr>
+                <tr class="significant">
+                  <td>w/o Chart Generator</td>
+                  <td>66.77 <span class="delta negative">(-2.46)</span></td>
+                  <td>60.91 <span class="delta negative">(-17.71)</span></td>
+                  <td>63.84 <span class="delta negative">(-10.08)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">
+            <i class="fas fa-info-circle"></i>
+            Removing the Chart Generator has the largest effect, highlighting
+            its central role in visual synthesis and cross-modal alignment.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Citation Section -->
+    <section id="citation" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+          <i class="fas fa-quote-left"></i>
+          Citation
+        </h2>
+        <div class="citation-box" data-aos="fade-up" data-aos-delay="100">
+          <pre><code>@inproceedings{tvir2026,
+  title={TVIR: Building Deep Research Agents Towards Text-Visual Interleaved Report Generation},
+  author={Anonymous},
+  booktitle={Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year={2026}
+}</code></pre>
+          <button class="copy-btn" onclick="copyBibtex()">
+            <i class="fas fa-copy"></i>
+            Copy BibTeX
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <img
+              src="static/images/logo.png"
+              alt="TVIR Logo"
+              class="logo-img"
+            />
+            <span>TVIR</span>
+          </div>
+          <p class="footer-text">Text-Visual Interleaved Report Generation</p>
+          <div class="footer-links">
+            <a href="#" title="Paper"><i class="fas fa-file-pdf"></i></a>
+            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" title="Email"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 TVIR Team. All rights reserved.</p>
+          <p>Website template inspired by academic project pages.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
